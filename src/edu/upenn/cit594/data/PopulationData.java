@@ -5,7 +5,7 @@ public class PopulationData {
 	private String ZIPCode;
 	private String population;
 	/**
-	 * @return the zIPCode
+	 * @return the ZIPCode
 	 */
 	public String getZIPCode() {
 		return ZIPCode;
