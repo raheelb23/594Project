@@ -86,4 +86,8 @@ public class Logger {
 		out.flush();
 		
 	}
+	
+	public void close() {
+		out.close();
+	}
 }
