@@ -10,6 +10,16 @@ public class ParkingViolations {
 	private String violationID;
 	private String ZIPCode;
 	
+	public ParkingViolations(String time, String fine, String description, String vehicleID, String state, String violationID, String ZIPCode) {
+		this.time = time;
+		this.fine = fine;
+		this.description = description;
+		this.vehicleID = vehicleID;
+		this.state = state;
+		this.violationID = violationID;
+		this.ZIPCode = ZIPCode;
+	}
+	
 	/**
 	 * @return the time
 	 */
