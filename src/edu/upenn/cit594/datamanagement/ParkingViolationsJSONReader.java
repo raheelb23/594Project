@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -25,8 +27,9 @@ public class ParkingViolationsJSONReader implements ParkingViolationsReader {
 	}
 
 	@Override
-	public List<ParkingViolations> getParkingViolations() {
+	public Map<String, List<ParkingViolations>> getParkingViolations() {
 		
+		Map<String, List<ParkingViolations>> parkingViolationsMap = new TreeMap<String, List<ParkingViolations>>();
 		List<ParkingViolations> parkingViolations = new ArrayList<ParkingViolations>();
 		BufferedReader readJSONInputFile = null;
 		
@@ -63,6 +66,7 @@ public class ParkingViolationsJSONReader implements ParkingViolationsReader {
 						String ZIPCode = jParserViolation.get("zip_code").toString();
 
 						parkingViolations.add(new ParkingViolations(time, fine, description, vehicleID, state, violationID, ZIPCode));
+						parkingViolationsMap.put(ZIPCode, parkingViolations);
 
 					}
 				} catch (IOException e) {
@@ -75,7 +79,7 @@ public class ParkingViolationsJSONReader implements ParkingViolationsReader {
 					//add later
 				}
 
-				return parkingViolations;
+				return parkingViolationsMap;
 
 }
 

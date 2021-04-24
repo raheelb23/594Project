@@ -1,6 +1,7 @@
 package edu.upenn.cit594.datamanagement;
 
 import java.util.List;
+import java.util.Map;
 
 import edu.upenn.cit594.data.PropertyValues;
 
@@ -13,9 +14,9 @@ import edu.upenn.cit594.data.PropertyValues;
 public interface PropertyValuesReader {
 	
 	/**
-	 * This returns a list of Property Values
+	 * This returns a map of Property Values
 	 * @return
 	 */
-	public List<PropertyValues> getPropertyValues();
+	public Map<String, List<PropertyValues>> getPropertyValues();
 
 }

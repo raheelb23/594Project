@@ -1,6 +1,7 @@
 package edu.upenn.cit594.datamanagement;
 
 import java.util.List;
+import java.util.Map;
 
 import edu.upenn.cit594.data.ParkingViolations;
 
@@ -13,10 +14,10 @@ import edu.upenn.cit594.data.ParkingViolations;
 public interface ParkingViolationsReader {
 	
 	/**
-	 * This returns a list of Parking Violations
+	 * This returns a map of Parking Violations
 	 * @return
 	 */
-	public List<ParkingViolations> getParkingViolations();
+	public Map<String, List<ParkingViolations>> getParkingViolations();
 		
 
 }

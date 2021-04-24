@@ -6,9 +6,10 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import edu.upenn.cit594.data.ParkingViolations;
-
 
 public class ParkingViolationsCSVReader implements ParkingViolationsReader {
 
@@ -17,27 +18,28 @@ public class ParkingViolationsCSVReader implements ParkingViolationsReader {
 	public ParkingViolationsCSVReader(String fileName) {
 		this.fileName = fileName;
 	}
-	
+
 	@Override
-	public List<ParkingViolations> getParkingViolations() {
-		
+	public Map<String, List<ParkingViolations>> getParkingViolations() {
+
+		Map<String, List<ParkingViolations>> parkingViolationsMap = new TreeMap<String, List<ParkingViolations>>();
 		List<ParkingViolations> parkingViolations = new ArrayList<ParkingViolations>();
 		BufferedReader readCSVInputFile = null;
-		
+
 		try {
 			File file = new File(fileName);
 			if (file.canRead()) {
 				readCSVInputFile = new BufferedReader(new FileReader(fileName));
 			} else {
 				System.out.println("Please re-check your csv input file.");
-				//ErrorHandling.fileNotFound();
-				//add later
+				// ErrorHandling.fileNotFound();
+				// add later
 			}
 		} catch (FileNotFoundException e) {
-			//ErrorHandling.fileNotFound();
-			//add later
+			// ErrorHandling.fileNotFound();
+			// add later
 		}
-		
+
 		try {
 			// parse through information brought in by file
 			String violation;
@@ -53,16 +55,16 @@ public class ParkingViolationsCSVReader implements ParkingViolationsReader {
 				String ZIPCode = violationArray[6];
 
 				parkingViolations.add(new ParkingViolations(time, fine, description, vehicleID, state, violationID, ZIPCode));
+				parkingViolationsMap.put(ZIPCode, parkingViolations);
 			}
 
 		} catch (Exception e) {
 			System.out.println("Please re-check your csv input file.");
-			//ErrorHandling.ioException();
-			//add later
+			// ErrorHandling.ioException();
+			// add later
 		}
 
-		return parkingViolations;
+		return parkingViolationsMap;
 	}
-
 
 }
