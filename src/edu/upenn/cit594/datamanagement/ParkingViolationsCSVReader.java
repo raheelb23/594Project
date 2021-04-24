@@ -6,8 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 import edu.upenn.cit594.data.ParkingViolations;
 
@@ -20,9 +18,8 @@ public class ParkingViolationsCSVReader implements ParkingViolationsReader {
 	}
 
 	@Override
-	public Map<String, List<ParkingViolations>> getParkingViolations() {
+	public List<ParkingViolations> getParkingViolations() {
 
-		Map<String, List<ParkingViolations>> parkingViolationsMap = new TreeMap<String, List<ParkingViolations>>();
 		List<ParkingViolations> parkingViolations = new ArrayList<ParkingViolations>();
 		BufferedReader readCSVInputFile = null;
 
@@ -55,7 +52,6 @@ public class ParkingViolationsCSVReader implements ParkingViolationsReader {
 				String ZIPCode = violationArray[6];
 
 				parkingViolations.add(new ParkingViolations(time, fine, description, vehicleID, state, violationID, ZIPCode));
-				parkingViolationsMap.put(ZIPCode, parkingViolations);
 			}
 
 		} catch (Exception e) {
@@ -64,7 +60,7 @@ public class ParkingViolationsCSVReader implements ParkingViolationsReader {
 			// add later
 		}
 
-		return parkingViolationsMap;
+		return parkingViolations;
 	}
 
 }

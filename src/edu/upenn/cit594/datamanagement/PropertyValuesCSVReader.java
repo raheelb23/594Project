@@ -21,9 +21,8 @@ public class PropertyValuesCSVReader implements PropertyValuesReader {
 
 
 	@Override
-	public Map<String, List<PropertyValues>> getPropertyValues() {
+	public List<PropertyValues> getPropertyValues() {
 
-		Map<String, List<PropertyValues>> propertyValuesMap = new TreeMap<String, List<PropertyValues>>();
 		List<PropertyValues> propertyValues = new ArrayList<PropertyValues>();
 		BufferedReader readCSVInputFile = null;
 
@@ -51,7 +50,6 @@ public class PropertyValuesCSVReader implements PropertyValuesReader {
 			while ((property = readCSVInputFile.readLine()) != null) {
 				PropertyValues pv = identifyPropertyInfo(property);
 				propertyValues.add(pv);
-				propertyValuesMap.put(ZIPCode, propertyValues);
 			}
 
 		} catch (IOException e) {
@@ -59,7 +57,7 @@ public class PropertyValuesCSVReader implements PropertyValuesReader {
 			e.printStackTrace();
 		}
 
-		return propertyValuesMap;
+		return propertyValues;
 	}
 
 	private void identifyRowLabels(String label) {
