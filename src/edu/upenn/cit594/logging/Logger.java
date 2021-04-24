@@ -35,11 +35,16 @@ public class Logger {
 	}
 	
 	/**
-	 * creates and returns single instance of Logger
+	 * create a null logger object
+	 */
+	private static Logger logger = null;
+	
+	/**
+	 * instantiates and returns single instance of Logger
 	 * @return
 	 */
 	public static Logger getInstance() {
-		return new Logger(getFilename());
+		return logger = new Logger(getFilename());
 	}
 	
 	/**

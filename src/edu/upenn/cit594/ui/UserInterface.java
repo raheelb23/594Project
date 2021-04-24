@@ -1,9 +1,20 @@
 package edu.upenn.cit594.ui;
 
+import java.util.Map;
 import java.util.Scanner;
 
-public class UserInterface {
+import edu.upenn.cit594.logging.Logger;
+import edu.upenn.cit594.processor.MainProcessor;
 
+public class UserInterface {
+	
+	protected MainProcessor processor;
+	protected Logger logging;
+
+	public UserInterface(MainProcessor processor) {
+		this.processor = processor;
+		logging = Logger.getInstance();
+	}
 	
 	private void displayMenu() {
 		System.out.println();
@@ -24,6 +35,7 @@ public class UserInterface {
 		//send args to logger
 		//get processors going
 		//processors will do initial checks and readings
+		
 		
 		boolean exit = false;
 		Scanner in = new Scanner(System.in);
@@ -53,15 +65,17 @@ public class UserInterface {
 					
 				}
 				else if(choice == 6) choice6();
+				else {
+					System.out.println("User Input Error");
+					exit = exitSequence();
+				}
 				
 			}
 			catch (Exception e) {
 				//direct to error printing and exit
 			}
-			finally { 
-				in.close();
-			}
 		}
+		in.close();
 	}
 	
 	private boolean exitSequence() {
@@ -74,7 +88,7 @@ public class UserInterface {
 	 * for all of the ZIP Codes in the population input file.
 	 */
 	private void choice1() {
-		System.out.println("Replace this quotes with call to processor");
+		System.out.println(processor.getTotalPopulation());
 	}
 	
 	/**
@@ -84,6 +98,11 @@ public class UserInterface {
 		//send to processor and receive structure
 		//display ZIP code " " total fines per capita for that ZIP code
 		
+		Map<String, Double> totalFinesPerCapita = processor.getTotalFinesPerCapita();
+		
+		for(Map.Entry<String, Double> entry : totalFinesPerCapita.entrySet()) {
+			System.out.println(entry + " " + entry.getValue());
+		}
 	}
 	
 	/**

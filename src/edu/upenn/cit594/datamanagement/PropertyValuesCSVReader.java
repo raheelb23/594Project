@@ -15,13 +15,10 @@ import edu.upenn.cit594.data.PropertyValues;
 
 public class PropertyValuesCSVReader implements PropertyValuesReader {
 
-	protected String fileName;
+	public static String fileName;
 	private HashMap<String, Integer> rowLabelMap = new HashMap<>();
 	private String ZIPCode;
 
-	public PropertyValuesCSVReader(String fileName) {
-		this.fileName = fileName;
-	}
 
 	@Override
 	public Map<String, List<PropertyValues>> getPropertyValues() {
@@ -48,13 +45,11 @@ public class PropertyValuesCSVReader implements PropertyValuesReader {
 			String property;
 
 			if ((property = readCSVInputFile.readLine()) != null) {
-				String rowLabel = readCSVInputFile.readLine();
-				identifyRowLabels(rowLabel);
+				identifyRowLabels(property);
 			}
 
 			while ((property = readCSVInputFile.readLine()) != null) {
-				String propertyInfo = readCSVInputFile.readLine();
-				PropertyValues pv = identifyPropertyInfo(propertyInfo);
+				PropertyValues pv = identifyPropertyInfo(property);
 				propertyValues.add(pv);
 				propertyValuesMap.put(ZIPCode, propertyValues);
 			}
