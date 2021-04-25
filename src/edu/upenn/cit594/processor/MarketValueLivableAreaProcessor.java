@@ -24,15 +24,20 @@ public class MarketValueLivableAreaProcessor {
 		for(PropertyValues property : propertiesList) {
 			
 			String ZIPcode = property.getZipCode();
+
 			if(ZIPcode == null) continue;
 			if(ZIPcode.isEmpty()) continue;
+			
+			try { Integer.parseInt(ZIPcode);
+			}
+			catch (Exception e) {
+				continue;
+			}
 			
 			if(Integer.parseInt(ZIPcode) == ZIP) {
 				totalResidences++;
 				
 				double market = 0, livable = 0;
-				
-				System.out.println(marketSum += Double.parseDouble(property.getMarketValue()));
 				
 				try {  market = Double.parseDouble(property.getMarketValue()); }
 				catch (Exception e) {

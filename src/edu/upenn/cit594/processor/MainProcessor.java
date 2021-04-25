@@ -25,8 +25,10 @@ public class MainProcessor {
 	//for memoization - if a calculation is called, results are stored,
 	//so it can be used for subsequent calls
 	protected int totalPopulation = -1;
-	protected Map<String, Double> totalFinesPerCapita = new TreeMap<String, Double>();
+	protected String finesPerResidenceMaxPop = "-1";
+	protected Map<String, String> totalFinesPerCapita = new TreeMap<String, String>();
 	protected Map<Integer, MarketValueLivableArea> marketValueLivableArea = new HashMap<Integer, MarketValueLivableArea>();
+	protected Map<String, Double> totalFines = new HashMap<String, Double>();
 	
 	public MainProcessor(ParkingViolationsReader violations) {
 		this.violations = violations;
@@ -55,7 +57,7 @@ public class MainProcessor {
 		return totalPopulation;
 	}
 	
-	public Map<String, Double> getTotalFinesPerCapita() {
+	public Map<String, String> getTotalFinesPerCapita() {
 		
 		if(totalFinesPerCapita.isEmpty() == false) return totalFinesPerCapita; //check if call made prev.
 		
@@ -86,28 +88,30 @@ public class MainProcessor {
 			if(populationList.containsKey(ZIPcode) == false) continue;
 			double ZIPpopulation = Double.parseDouble(populationList.get(ZIPcode));
 			double answer = entry.getValue() / ZIPpopulation;
-			
 			String answerString = truncate(answer, 4);
-			totalFinesPerCapita.put(ZIPcode, Double.parseDouble(answerString));
+			totalFinesPerCapita.put(ZIPcode, answerString);
+			
+			if(totalFines.containsKey(ZIPcode)) continue;
+			else {
+				totalFines.put(ZIPcode, entry.getValue());
+			}
 		}
 		
 		return totalFinesPerCapita;
 	}
 	
-	public int getMarketValueLivableArea(int ZIP, int choice) {
+	public String getMarketValueLivableArea(int ZIP, int choice) {
 		
 		MarketValueLivableArea details;
 		
 		if(marketValueLivableArea.containsKey(ZIP)) {
-			details = marketValueLivableArea.get(ZIP);
+			return marketValueLivableArea.get(ZIP).getAvgMarketValue();
 		}
 		else {
 			MarketValueLivableAreaProcessor strategy = new MarketValueLivableAreaProcessor(ZIP, propertiesList);
 			details = strategy.calculate();
 			marketValueLivableArea.put(ZIP, details);
 		}
-		
-		System.out.println(marketValueLivableArea.get(ZIP).getMarketValue());
 		
 		double answer = 0;
 		String answerString;
@@ -117,7 +121,7 @@ public class MainProcessor {
 				answer = details.getMarketValue() * 1.0 / details.getTotalHomes();
 			}
 			catch (Exception e) {
-				return 0;
+				return "0";
 			}
 		}
 		if(choice == 4) {
@@ -125,23 +129,25 @@ public class MainProcessor {
 				answer = details.getLivableArea() * 1.0 / details.getTotalHomes();
 			}
 			catch (Exception e) {
-				return 0;
+				return "0";
 			}
 		}
 
 		answerString = truncate(answer, 0);
-		return Integer.parseInt(answerString);
+		if(choice == 3) details.setAvgMarketValue(answerString);
+		if(choice == 4) details.setAvgLivableArea(answerString);
+		return answerString;
 		
 	}
 	
-	public int getMarketValuePerCapita(int ZIP) {
+	public String getMarketValuePerCapita(int ZIP) {
 		
-		if(populationList.containsKey(Integer.toString(ZIP)) == false) return 0;
+		if(populationList.containsKey(Integer.toString(ZIP)) == false) return "0";
 		
 		MarketValueLivableArea details;
 		
 		if(marketValueLivableArea.containsKey(ZIP)) {
-			details = marketValueLivableArea.get(ZIP);
+			return marketValueLivableArea.get(ZIP).getMarketValuePerCapita();
 		}
 		else {
 			getMarketValueLivableArea(ZIP, 3);
@@ -156,12 +162,71 @@ public class MainProcessor {
 			answer = details.getMarketValue() * 1.0 / ZIPpopulation;
 		}
 		catch (Exception e) {
-			return 0;
+			return "0";
 		}
 		
 		answerString = truncate(answer, 0);
-		return Integer.parseInt(answerString);
+		details.setMarketValuePerCapita(answerString);
+		return answerString;
 		
+	}
+	
+	public String getFinesPerResidenceMaxPopCounty() {
+		if(Integer.parseInt(finesPerResidenceMaxPop) > -1) return finesPerResidenceMaxPop;
+		
+		MarketValueLivableArea details;
+		double fineDetails = 0;
+		int ZIP = -1;
+		int maximum = -1;
+		
+		for(Map.Entry<String, String> population : populationList.entrySet()) {
+			
+			int num = 0;
+			try {
+				num = Integer.parseInt(population.getValue());
+			}
+			catch (Exception e) {
+				continue;
+			}
+			
+			if(num > maximum) {
+				ZIP = Integer.parseInt(population.getKey());
+				maximum = num;
+			}
+		}
+		
+		if(marketValueLivableArea.containsKey(ZIP)) {
+			details  = marketValueLivableArea.get(ZIP);
+		}
+		else {
+			MarketValueLivableAreaProcessor strategy = new MarketValueLivableAreaProcessor(ZIP, propertiesList);
+			details = strategy.calculate();
+			marketValueLivableArea.put(ZIP, details);
+		}
+		
+		String ZIPcode = Integer.toString(ZIP);
+		if(totalFines.containsKey(ZIPcode)) {
+			fineDetails = totalFines.get(ZIPcode);
+		}
+		else {
+			getTotalFinesPerCapita();
+			fineDetails = totalFines.get(ZIPcode);
+			
+		}
+		
+		double answer = 0;
+		String answerString;
+		
+		try {
+			answer = fineDetails * 1.0 / details.getTotalHomes();
+		}
+		catch (Exception e) {
+			return "0";
+		}
+		
+		answerString = truncate(answer, 4);
+		finesPerResidenceMaxPop = answerString;
+		return answerString;
 	}
 	
 	private String truncate(double answer, int decimals) {
@@ -172,7 +237,15 @@ public class MainProcessor {
 		if (decimals == 0) return answerString.substring(0, decimalIndex);
 		
 		answerString = answerString.substring(0, decimalIndex+decimals+1);
-		System.out.println(answerString);
+		
+		int variance = answerString.length() - (decimalIndex + 1); 
+		
+		if(variance < decimals) {
+			for(int i = 0 ; i < decimals - variance ; i++) {
+				answerString.concat("0");
+			}
+		}
+		
 		return answerString;
 	
 	}

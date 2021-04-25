@@ -25,7 +25,7 @@ public class UserInterface {
 		System.out.println("3 - Calculate average market value for residences in a specified ZIP Code");
 		System.out.println("4 - Calculate average total livable area for residences in a specified ZIP Code");
 		System.out.println("5 - Calculate total residential market value per capita for a specified ZIP Code");
-		System.out.println("6 - ");
+		System.out.println("6 - Calculate total fines for residences in county with maximum population");
 		System.out.println();
 		System.out.print("Enter your choice: ");
 	}
@@ -37,38 +37,45 @@ public class UserInterface {
 		boolean exit = false;
 		Scanner in = new Scanner(System.in);
 		
-		while(!exit) {
+		while(exit == false) {
 			displayMenu();
-			String line = in.nextLine();
 			int choice;
 			
-			try {
-				choice = Integer.parseInt(line);
-				logging.logString(Integer.toString(choice));
-				
-				if(choice == 0) exit = exitSequence();
-				else if(choice == 1) choice1();
-				else if(choice == 2) choice2();
-				else if(choice == 3 || choice == 4 || choice == 5) {
-					int ZIP = interim(in);
-					if (ZIP == -1) {
-						continue;
+			if(in.hasNextInt()) {
+				try {
+					choice = in.nextInt();
+					logging.logString(Integer.toString(choice));
+					
+					if(choice == 0) exit = exitSequence();
+					else if(choice == 1) choice1();
+					else if(choice == 2) choice2();
+					else if(choice == 3 || choice == 4 || choice == 5) {
+						int ZIP = interim(in);
+						if (ZIP == -1) {
+							continue;
+						}
+						if (choice == 3) choice3(ZIP);
+						else if (choice == 4) choice4(ZIP);
+						else if (choice == 5) choice5(ZIP);
+						
 					}
-					if (choice == 3) choice3(ZIP);
-					else if (choice == 4) choice4(ZIP);
-					else if (choice == 5) choice5(ZIP);
+					else if(choice == 6) choice6();
+					else {
+						System.out.println("User Input Error");
+						exit = exitSequence();
+					}
 					
 				}
-				else if(choice == 6) choice6();
-				else {
-					System.out.println("User Input Error");
-					exit = exitSequence();
-				}
+				catch (Exception e) {
+					//direct to error printing and exit
 				
+				}
 			}
-			catch (Exception e) {
-				//direct to error printing and exit
+			else {
+				//print error
+				exit = true;
 			}
+			
 		}
 		in.close();
 	}
@@ -93,9 +100,9 @@ public class UserInterface {
 		//send to processor and receive structure
 		//display ZIP code " " total fines per capita for that ZIP code
 		
-		Map<String, Double> totalFinesPerCapita = processor.getTotalFinesPerCapita();
+		Map<String, String> totalFinesPerCapita = processor.getTotalFinesPerCapita();
 		
-		for(Map.Entry<String, Double> entry : totalFinesPerCapita.entrySet()) {
+		for(Map.Entry<String, String> entry : totalFinesPerCapita.entrySet()) {
 			System.out.println(entry.getKey() + " " + entry.getValue());
 		}
 	}
@@ -149,5 +156,6 @@ public class UserInterface {
 	
 	private void choice6() {
 		
+		System.out.println(processor.getFinesPerResidenceMaxPopCounty());
 	}
 }
