@@ -32,10 +32,7 @@ public class UserInterface {
 	
 	public void start(String[] args) {
 		
-		//send args to logger
-		//get processors going
-		//processors will do initial checks and readings
-		
+		logging.logStringArray(args);
 		
 		boolean exit = false;
 		Scanner in = new Scanner(System.in);
@@ -47,7 +44,7 @@ public class UserInterface {
 			
 			try {
 				choice = Integer.parseInt(line);
-				//log choice
+				logging.logString(Integer.toString(choice));
 				
 				if(choice == 0) exit = exitSequence();
 				else if(choice == 1) choice1();
@@ -55,13 +52,11 @@ public class UserInterface {
 				else if(choice == 3 || choice == 4 || choice == 5) {
 					int ZIP = interim(in);
 					if (ZIP == -1) {
-						exit = true;
-						in.close();
 						continue;
 					}
 					if (choice == 3) choice3(ZIP);
-					if (choice == 4) choice4(ZIP);
-					if (choice == 5) choice5(ZIP);
+					else if (choice == 4) choice4(ZIP);
+					else if (choice == 5) choice5(ZIP);
 					
 				}
 				else if(choice == 6) choice6();
@@ -101,7 +96,7 @@ public class UserInterface {
 		Map<String, Double> totalFinesPerCapita = processor.getTotalFinesPerCapita();
 		
 		for(Map.Entry<String, Double> entry : totalFinesPerCapita.entrySet()) {
-			System.out.println(entry + " " + entry.getValue());
+			System.out.println(entry.getKey() + " " + entry.getValue());
 		}
 	}
 	
@@ -112,8 +107,10 @@ public class UserInterface {
 	 */
 	private int interim(Scanner in) {
 		try {
+			System.out.print("Please enter a ZIP Code: ");
 			int zip = in.nextInt();
-			//log zip
+			System.out.println();
+			logging.logString(Integer.toString(zip));
 			return zip;
 		}
 		catch (Exception e) {
@@ -127,8 +124,7 @@ public class UserInterface {
 	 */
 	private void choice3(int ZIP) {
 		
-		//sent to processor and receive answer
-		//display answer
+		System.out.println(processor.getMarketValueLivableArea(ZIP, 3));
 		
 	}
 	
@@ -138,8 +134,7 @@ public class UserInterface {
 	 */
 	private void choice4(int ZIP) {
 		
-		//sent to processor and receive answer
-		//display answer
+		System.out.println(processor.getMarketValueLivableArea(ZIP, 4));
 	}
 	
 	/**
@@ -148,8 +143,7 @@ public class UserInterface {
 	 */
 	private void choice5(int ZIP) {
 		
-		//sent to processor and receive answer
-		//display answer
+		System.out.println(processor.getMarketValuePerCapita(ZIP));
 		
 	}
 	

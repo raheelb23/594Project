@@ -35,7 +35,7 @@ public class Logger {
 	}
 	
 	/**
-	 * create a null logger object
+	 * create a null Singleton logger object
 	 */
 	private static Logger logger = null;
 	
