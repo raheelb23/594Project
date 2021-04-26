@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import edu.upenn.cit594.data.PropertyValues;
+import edu.upenn.cit594.ui.ErrorCheckerPrinter;
 
 public class PropertyValuesCSVReader implements PropertyValuesReader {
 
@@ -31,13 +32,12 @@ public class PropertyValuesCSVReader implements PropertyValuesReader {
 			if (file.canRead()) {
 				readCSVInputFile = new BufferedReader(new FileReader(fileName));
 			} else {
-				System.out.println("Please re-check your csv input file.");
-				// ErrorHandling.fileNotFound();
-				// add later
+				ErrorCheckerPrinter.printFileReadError();
+				return new ArrayList<PropertyValues>();
 			}
 		} catch (FileNotFoundException e) {
-			// ErrorHandling.fileNotFound();
-			// add later
+			ErrorCheckerPrinter.printFileDoesNotExistError();
+			return new ArrayList<PropertyValues>();
 		}
 
 		try {
@@ -52,9 +52,10 @@ public class PropertyValuesCSVReader implements PropertyValuesReader {
 				propertyValues.add(pv);
 			}
 
-		} catch (IOException e) {
+		} catch (Exception e) {
 
-			e.printStackTrace();
+			ErrorCheckerPrinter.printFileReadError();
+			return new ArrayList<PropertyValues>();
 		}
 
 		return propertyValues;

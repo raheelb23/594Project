@@ -15,6 +15,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import edu.upenn.cit594.data.ParkingViolations;
+import edu.upenn.cit594.ui.ErrorCheckerPrinter;
 
 public class ParkingViolationsJSONReader implements ParkingViolationsReader {
 
@@ -35,13 +36,12 @@ public class ParkingViolationsJSONReader implements ParkingViolationsReader {
 			if (file.canRead()) {
 				readJSONInputFile = new BufferedReader(new FileReader(fileName));
 			} else {
-				System.out.println("Please re-check your json input file.");
-				// ErrorHandling.fileNotFound();
-				// add later
+				ErrorCheckerPrinter.printFileReadError();
+				return new ArrayList<ParkingViolations>();
 			}
 		} catch (FileNotFoundException e) {
-			// ErrorHandling.fileNotFound();
-			// add later
+			ErrorCheckerPrinter.printFileDoesNotExistError();
+			return new ArrayList<ParkingViolations>();
 		}
 
 		// parse through information brought in by file
@@ -66,14 +66,9 @@ public class ParkingViolationsJSONReader implements ParkingViolationsReader {
 						.add(new ParkingViolations(time, fine, description, vehicleID, state, violationID, ZIPCode));
 
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
-			// ErrorHandling.ioException();
-			// add later
-		} catch (ParseException e) {
-			e.printStackTrace();
-			// ErrorHandling.parseException();
-			// add later
+		} catch (Exception e) {
+			ErrorCheckerPrinter.printFileReadError();
+			return new ArrayList<ParkingViolations>();
 		}
 
 		return parkingViolations;

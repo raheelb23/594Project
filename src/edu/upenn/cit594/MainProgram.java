@@ -7,6 +7,7 @@ import edu.upenn.cit594.datamanagement.PopulationReader;
 import edu.upenn.cit594.datamanagement.PropertyValuesCSVReader;
 import edu.upenn.cit594.logging.Logger;
 import edu.upenn.cit594.processor.MainProcessor;
+import edu.upenn.cit594.ui.ErrorCheckerPrinter;
 import edu.upenn.cit594.ui.UserInterface;
 
 /**
@@ -23,7 +24,9 @@ public class MainProgram {
 	 */
 	public static void main(String[] args) {
 		
-		//error check args
+		ErrorCheckerPrinter.errorChecker(args);
+		
+		if(ErrorCheckerPrinter.exitProgram) return;
 		
 		//Set-up reader depending on type of input
 		ParkingViolationsReader violationsReader = null;
@@ -41,6 +44,8 @@ public class MainProgram {
 		
 		//Pass in violationsReader to MainProcessor
 		MainProcessor mainProcessor = new MainProcessor(violationsReader);
+		
+		if(ErrorCheckerPrinter.exitProgram) return;
 		
 		//Pass mainProcessor to UserInterface and begin program
 		UserInterface interactive = new UserInterface(mainProcessor);

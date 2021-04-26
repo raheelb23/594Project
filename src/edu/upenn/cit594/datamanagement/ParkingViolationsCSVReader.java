@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.upenn.cit594.data.ParkingViolations;
+import edu.upenn.cit594.ui.ErrorCheckerPrinter;
 
 public class ParkingViolationsCSVReader implements ParkingViolationsReader {
 
@@ -28,13 +29,12 @@ public class ParkingViolationsCSVReader implements ParkingViolationsReader {
 			if (file.canRead()) {
 				readCSVInputFile = new BufferedReader(new FileReader(fileName));
 			} else {
-				System.out.println("Please re-check your csv input file.");
-				// ErrorHandling.fileNotFound();
-				// add later
+				ErrorCheckerPrinter.printFileReadError();
+				return new ArrayList<ParkingViolations>();
 			}
 		} catch (FileNotFoundException e) {
-			// ErrorHandling.fileNotFound();
-			// add later
+			ErrorCheckerPrinter.printFileDoesNotExistError();
+			return new ArrayList<ParkingViolations>();
 		}
 
 		try {
@@ -55,9 +55,8 @@ public class ParkingViolationsCSVReader implements ParkingViolationsReader {
 			}
 
 		} catch (Exception e) {
-			System.out.println("Please re-check your csv input file.");
-			// ErrorHandling.ioException();
-			// add later
+			ErrorCheckerPrinter.printFileReadError();
+			return new ArrayList<ParkingViolations>();
 		}
 
 		return parkingViolations;

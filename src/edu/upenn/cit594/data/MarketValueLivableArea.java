@@ -4,15 +4,17 @@ public class MarketValueLivableArea {
 
 	protected double marketValue;
 	protected double livableArea;
-	protected int totalHomes;
+	protected int totalHomesMV;
+	protected int totalHomesLA;
 	protected String avgMarketValue;
 	protected String avgLivableArea;
 	protected String marketValuePerCapita;
 	
-	public MarketValueLivableArea(double marketValue, double livableArea, int totalHomes) {
+	public MarketValueLivableArea(double marketValue, double livableArea, int totalHomesMV, int totalHomesLA) {
 		this.marketValue = marketValue;
 		this.livableArea = livableArea;
-		this.totalHomes = totalHomes;
+		this.totalHomesMV = totalHomesMV;
+		this.totalHomesLA = totalHomesLA;
 	}
 
 	/**
@@ -30,10 +32,17 @@ public class MarketValueLivableArea {
 	}
 
 	/**
-	 * @return the totalHomes
+	 * @return the totalHomesMV
 	 */
-	public int getTotalHomes() {
-		return totalHomes;
+	public int getTotalHomesMV() {
+		return totalHomesMV;
+	}
+	
+	/**
+	 * @return the totalHomesLA
+	 */
+	public int getTotalHomesLA() {
+		return totalHomesLA;
 	}
 
 	/**

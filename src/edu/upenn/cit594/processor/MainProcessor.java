@@ -1,5 +1,7 @@
 package edu.upenn.cit594.processor;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,7 +70,7 @@ public class MainProcessor {
 				String ZIPcode= entry.getZIPCode();
 				String state = entry.getState();
 				if(ZIPcode == null || state == null) continue;
-				if(ZIPcode.isEmpty() || state.isEmpty()) continue;
+				if(ZIPcode.isEmpty() || ZIPcode.length() < 5 | state.isEmpty()) continue;
 				if(state.equalsIgnoreCase("PA") == false) continue;
 				
 				if(temporary.containsKey(ZIPcode)) {
@@ -94,6 +96,7 @@ public class MainProcessor {
 			if(totalFines.containsKey(ZIPcode)) continue;
 			else {
 				totalFines.put(ZIPcode, entry.getValue());
+				if (entry.getKey().equals("19120")) System.out.println(entry.getValue());
 			}
 		}
 		
@@ -105,7 +108,9 @@ public class MainProcessor {
 		MarketValueLivableArea details;
 		
 		if(marketValueLivableArea.containsKey(ZIP)) {
-			return marketValueLivableArea.get(ZIP).getAvgMarketValue();
+			if(choice == 3) return marketValueLivableArea.get(ZIP).getAvgMarketValue();
+			if(choice == 4) return marketValueLivableArea.get(ZIP).getAvgLivableArea();
+			return "";
 		}
 		else {
 			MarketValueLivableAreaProcessor strategy = new MarketValueLivableAreaProcessor(ZIP, propertiesList);
@@ -113,31 +118,37 @@ public class MainProcessor {
 			marketValueLivableArea.put(ZIP, details);
 		}
 		
-		double answer = 0;
-		String answerString;
+		double answerChoice3 = 0;
+		String answerStringChoice3;
 		
-		if(choice == 3) {
-			try {
-				answer = details.getMarketValue() * 1.0 / details.getTotalHomes();
-			}
-			catch (Exception e) {
-				return "0";
-			}
+		
+		try {
+			answerChoice3 = details.getMarketValue() * 1.0 / details.getTotalHomesMV();
 		}
-		if(choice == 4) {
-			try {
-				answer = details.getLivableArea() * 1.0 / details.getTotalHomes();
-			}
-			catch (Exception e) {
-				return "0";
-			}
+		catch (Exception e) {
+			return "0";
 		}
+	
+		double answerChoice4 = 0;
+		String answerStringChoice4;
+	
+		try {
+			answerChoice4 = details.getLivableArea() * 1.0 / details.getTotalHomesLA();
+		}
+		catch (Exception e) {
+			return "0";
+		}
+		
 
-		answerString = truncate(answer, 0);
-		if(choice == 3) details.setAvgMarketValue(answerString);
-		if(choice == 4) details.setAvgLivableArea(answerString);
-		return answerString;
+		answerStringChoice3 = truncate(answerChoice3, 0);
+		answerStringChoice4 = truncate(answerChoice4, 0);
+		details.setAvgMarketValue(answerStringChoice3);
+		details.setAvgLivableArea(answerStringChoice3);
 		
+		if(choice == 3) return answerStringChoice3;
+		if(choice == 4) return answerStringChoice4;
+		
+		return "";
 	}
 	
 	public String getMarketValuePerCapita(int ZIP) {
@@ -195,6 +206,7 @@ public class MainProcessor {
 			}
 		}
 		
+		
 		if(marketValueLivableArea.containsKey(ZIP)) {
 			details  = marketValueLivableArea.get(ZIP);
 		}
@@ -218,7 +230,7 @@ public class MainProcessor {
 		String answerString;
 		
 		try {
-			answer = fineDetails * 1.0 / details.getTotalHomes();
+			answer = fineDetails * 1.0 / details.getTotalHomesLA();
 		}
 		catch (Exception e) {
 			return "0";
@@ -230,11 +242,22 @@ public class MainProcessor {
 	}
 	
 	private String truncate(double answer, int decimals) {
-		String answerString = Double.toString(answer);
+		
+		if (answer == 0) return "0";
+		
+		String answerString;
+		
+		if(decimals == 0) {
+			DecimalFormat decimalFormat = new DecimalFormat("#,##0");
+			decimalFormat.setRoundingMode(RoundingMode.DOWN);
+			answerString = decimalFormat.format(answer);
+			return answerString;
+		}
+		
+		answerString = Double.toString(answer);
 		
 		int decimalIndex = answerString.indexOf(".");
 		
-		if (decimals == 0) return answerString.substring(0, decimalIndex);
 		
 		answerString = answerString.substring(0, decimalIndex+decimals+1);
 		

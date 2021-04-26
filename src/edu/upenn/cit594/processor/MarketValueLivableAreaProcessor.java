@@ -19,7 +19,8 @@ public class MarketValueLivableAreaProcessor {
 		
 		double marketSum = 0;
 		double livableSum = 0;
-		int totalResidences = 0;
+		int totalResidencesMV = 0;
+		int totalResidencesLA = 0;
 		
 		for(PropertyValues property : propertiesList) {
 			
@@ -35,26 +36,33 @@ public class MarketValueLivableAreaProcessor {
 			}
 			
 			if(Integer.parseInt(ZIPcode) == ZIP) {
-				totalResidences++;
+			
 				
-				double market = 0, livable = 0;
-				
-				try {  market = Double.parseDouble(property.getMarketValue()); }
+				try {  
+					marketSum += Double.parseDouble(property.getMarketValue()); 
+					totalResidencesMV++;
+					}
 				catch (Exception e) {
-					try { livable = Double.parseDouble(property.getLivableArea()); }
-					catch (Exception f) { continue; }
+					try { 
+						livableSum += Double.parseDouble(property.getLivableArea()); 
+						totalResidencesLA++;
+						}
+					catch (Exception f) { 
+						continue; }
 					continue;
 				}
 				
-				try { livable = Double.parseDouble(property.getLivableArea());}
-				catch (Exception e) { continue; }
+				try { 
+					livableSum += Double.parseDouble(property.getLivableArea());
+					totalResidencesLA++;
+					}
+				catch (Exception e) { 
+					continue; }
 				
-				marketSum += market;
-				livableSum += livable;
 				
 			}
 		}
 		
-		return new MarketValueLivableArea(marketSum, livableSum, totalResidences);
+		return new MarketValueLivableArea(marketSum, livableSum, totalResidencesMV, totalResidencesLA);
 	}
 }
