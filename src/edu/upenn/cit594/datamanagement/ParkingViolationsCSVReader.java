@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,7 +50,8 @@ public class ParkingViolationsCSVReader implements ParkingViolationsReader {
 				String vehicleID = violationArray[3];
 				String state = violationArray[4];
 				String violationID = violationArray[5];
-				String ZIPCode = violationArray[6];
+				String ZIPCode = "";
+				if(violationArray.length == 7) ZIPCode = violationArray[6];
 
 				parkingViolations.add(new ParkingViolations(time, fine, description, vehicleID, state, violationID, ZIPCode));
 			}
@@ -57,7 +59,7 @@ public class ParkingViolationsCSVReader implements ParkingViolationsReader {
 		} catch (Exception e) {
 			ErrorCheckerPrinter.printFileReadError();
 			return new ArrayList<ParkingViolations>();
-		}
+		} 
 
 		return parkingViolations;
 	}

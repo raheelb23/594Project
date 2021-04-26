@@ -41,41 +41,52 @@ public class UserInterface {
 			displayMenu();
 			int choice;
 			
+
 			if(in.hasNextInt()) {
-				try {
-					choice = in.nextInt();
-					logging.logString(Integer.toString(choice));
-					
-					if(choice == 0) exit = exitSequence();
-					else if(choice == 1) choice1();
-					else if(choice == 2) choice2();
-					else if(choice == 3 || choice == 4 || choice == 5) {
-						int ZIP = interim(in);
-						if (ZIP == -1) {
-							continue;
-						}
-						if (choice == 3) choice3(ZIP);
-						else if (choice == 4) choice4(ZIP);
-						else if (choice == 5) choice5(ZIP);
-						
+			
+				String entry;
+				entry = in.nextLine();
+
+				if(entry.length() != 1) {
+					ErrorCheckerPrinter.printUIErrors();
+					exit = true;
+					continue;
+				}
+				
+				choice = Integer.parseInt(entry);
+				if(Double.isNaN((double) choice)){
+					ErrorCheckerPrinter.printUIErrors();
+					exit = true;
+					continue;
+				}
+				
+				logging.logString(Integer.toString(choice));
+				
+				
+				if(choice == 0) exit = exitSequence();
+				else if(choice == 1) choice1();
+				else if(choice == 2) choice2();
+				else if(choice == 3 || choice == 4 || choice == 5) {
+					int ZIP = interim(in);
+					if (ZIP == -1) {
+						continue;
 					}
-					else if(choice == 6) choice6();
-					else {
-						System.out.println("User Input Error");
-						exit = exitSequence();
-					}
+					if (choice == 3) choice3(ZIP);
+					else if (choice == 4) choice4(ZIP);
+					else if (choice == 5) choice5(ZIP);
 					
 				}
-				catch (Exception e) {
-					//direct to error printing and exit
-				
+				else if(choice == 6) choice6();
+				else {
+					System.out.println("User Input Error");
+					exit = exitSequence();
 				}
 			}
-			else {
-				//print error
+			else{
+				ErrorCheckerPrinter.printUIErrors();
 				exit = true;
 			}
-			
+		
 		}
 		in.close();
 	}
@@ -116,6 +127,7 @@ public class UserInterface {
 		try {
 			System.out.print("Please enter a ZIP Code: ");
 			int zip = in.nextInt();
+			in.nextLine();
 			System.out.println();
 			logging.logString(Integer.toString(zip));
 			return zip;

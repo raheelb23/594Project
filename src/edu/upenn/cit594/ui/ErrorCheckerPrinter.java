@@ -34,4 +34,8 @@ public class ErrorCheckerPrinter {
 		System.out.println("File: one or more of the specified files does not exist. The program will now exit.");
 		exitProgram = true;
 	}
+	
+	public static void printUIErrors() {
+		System.out.println("User Error: Entry Not Valid. The program will now exit.");
+	}
 }

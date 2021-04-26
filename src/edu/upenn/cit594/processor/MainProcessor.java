@@ -96,7 +96,6 @@ public class MainProcessor {
 			if(totalFines.containsKey(ZIPcode)) continue;
 			else {
 				totalFines.put(ZIPcode, entry.getValue());
-				if (entry.getKey().equals("19120")) System.out.println(entry.getValue());
 			}
 		}
 		
@@ -120,25 +119,15 @@ public class MainProcessor {
 		
 		double answerChoice3 = 0;
 		String answerStringChoice3;
-		
-		
-		try {
-			answerChoice3 = details.getMarketValue() * 1.0 / details.getTotalHomesMV();
-		}
-		catch (Exception e) {
-			return "0";
-		}
+
+		answerChoice3 = details.getMarketValue() * 1.0 / details.getTotalHomesMV();
+		if(Double.isNaN(answerChoice3)) answerChoice3 = 0;
 	
 		double answerChoice4 = 0;
 		String answerStringChoice4;
 	
-		try {
-			answerChoice4 = details.getLivableArea() * 1.0 / details.getTotalHomesLA();
-		}
-		catch (Exception e) {
-			return "0";
-		}
-		
+		answerChoice4 = details.getLivableArea() * 1.0 / details.getTotalHomesLA();
+		if(Double.isNaN(answerChoice4)) answerChoice4 = 0;
 
 		answerStringChoice3 = truncate(answerChoice3, 0);
 		answerStringChoice4 = truncate(answerChoice4, 0);
@@ -168,13 +157,11 @@ public class MainProcessor {
 		double answer = 0;
 		String answerString;
 		
-		try {
-			double ZIPpopulation = Double.parseDouble(populationList.get(Integer.toString(ZIP)));
-			answer = details.getMarketValue() * 1.0 / ZIPpopulation;
-		}
-		catch (Exception e) {
-			return "0";
-		}
+	
+		double ZIPpopulation = Double.parseDouble(populationList.get(Integer.toString(ZIP)));
+		answer = details.getMarketValue() * 1.0 / ZIPpopulation;
+		
+		if(Double.isNaN(answer)) answer = 0;
 		
 		answerString = truncate(answer, 0);
 		details.setMarketValuePerCapita(answerString);
@@ -229,12 +216,9 @@ public class MainProcessor {
 		double answer = 0;
 		String answerString;
 		
-		try {
-			answer = fineDetails * 1.0 / details.getTotalHomesLA();
-		}
-		catch (Exception e) {
-			return "0";
-		}
+		answer = fineDetails * 1.0 / details.getTotalHomesLA();
+		
+		if(Double.isNaN(answer)) answer = 0;
 		
 		answerString = truncate(answer, 4);
 		finesPerResidenceMaxPop = answerString;
