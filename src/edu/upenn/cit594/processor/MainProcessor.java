@@ -132,7 +132,7 @@ public class MainProcessor {
 		answerStringChoice3 = truncate(answerChoice3, 0);
 		answerStringChoice4 = truncate(answerChoice4, 0);
 		details.setAvgMarketValue(answerStringChoice3);
-		details.setAvgLivableArea(answerStringChoice3);
+		details.setAvgLivableArea(answerStringChoice4);
 		
 		if(choice == 3) return answerStringChoice3;
 		if(choice == 4) return answerStringChoice4;
@@ -147,7 +147,10 @@ public class MainProcessor {
 		MarketValueLivableArea details;
 		
 		if(marketValueLivableArea.containsKey(ZIP)) {
-			return marketValueLivableArea.get(ZIP).getMarketValuePerCapita();
+			details = marketValueLivableArea.get(ZIP);
+			if (details.getMarketValuePerCapita() != null) {
+				return details.getMarketValuePerCapita();
+			}
 		}
 		else {
 			getMarketValueLivableArea(ZIP, 3);
