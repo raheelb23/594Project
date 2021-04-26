@@ -6,16 +6,29 @@ import java.util.Scanner;
 import edu.upenn.cit594.logging.Logger;
 import edu.upenn.cit594.processor.MainProcessor;
 
+/**
+ * This class interacts with the user to take in inputs, display results,
+ * and log arguments. 
+ * @author Muizz Mullani and Raheel Bhimani
+ *
+ */
 public class UserInterface {
 	
 	protected MainProcessor processor;
 	protected Logger logging;
 
+	/**
+	 * Constructor that sets up MainProcessor and logging function
+	 * @param processor
+	 */
 	public UserInterface(MainProcessor processor) {
 		this.processor = processor;
 		logging = Logger.getInstance();
 	}
 	
+	/**
+	 * Helper method to display the menu to user
+	 */
 	private void displayMenu() {
 		System.out.println();
 		System.out.println("Please select from the following. Enter a number for your choice." + "\n");
@@ -30,6 +43,11 @@ public class UserInterface {
 		System.out.print("Enter your choice: ");
 	}
 	
+	/**
+	 * This method triggers the program to continuously display menu, show results,
+	 * and log arguments until user exits and or an error is encountered.  
+	 * @param args
+	 */
 	public void start(String[] args) {
 		
 		logging.logStringArray(args);
@@ -91,6 +109,10 @@ public class UserInterface {
 		in.close();
 	}
 	
+	/**
+	 * Begins exit sequence
+	 * @return
+	 */
 	private boolean exitSequence() {
 		System.out.println("The program will now exit. Thank you!");
 		return true;
@@ -108,8 +130,6 @@ public class UserInterface {
 	 * This method displays the total fines per capita for each ZIP Code 
 	 */
 	private void choice2() {
-		//send to processor and receive structure
-		//display ZIP code " " total fines per capita for that ZIP code
 		
 		Map<String, String> totalFinesPerCapita = processor.getTotalFinesPerCapita();
 		
@@ -166,6 +186,10 @@ public class UserInterface {
 		
 	}
 	
+	/**
+	 * This method displays the total fines for residences in the 
+	 * most populous ZIP code
+	 */
 	private void choice6() {
 		
 		System.out.println(processor.getFinesPerResidenceMaxPopCounty());

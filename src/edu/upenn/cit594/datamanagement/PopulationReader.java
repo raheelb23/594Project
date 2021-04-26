@@ -4,19 +4,24 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
 
-import edu.upenn.cit594.data.ParkingViolations;
 import edu.upenn.cit594.ui.ErrorCheckerPrinter;
 
-
+/**
+ * This class reads the population data from a specified file. 
+ * @author Muizz Mullani and Raheel Bhimani
+ *
+ */
 public class PopulationReader {
 	
 	public static String fileName;
 	
+	/**
+	 * This method returns a map as it reads in the population data
+	 * @return
+	 */
 	public Map<String, String> getPopulationData(){
 		
 		TreeMap<String, String> populationData = new TreeMap<>();
@@ -29,11 +34,13 @@ public class PopulationReader {
 			if (file.canRead()) {
 				readPopulationInputFile = new BufferedReader(new FileReader(fileName));
 			} else {
-				ErrorCheckerPrinter.printFileReadError();
+				ErrorCheckerPrinter.printFileReadError(); //prints the error
+				//returns empty map to trigger program exit
 				return new TreeMap<String, String>();
 			}
 		} catch (FileNotFoundException e) {
-			ErrorCheckerPrinter.printFileDoesNotExistError();
+			ErrorCheckerPrinter.printFileDoesNotExistError(); //prints the error
+			//returns empty map to trigger program exit
 			return new TreeMap<String, String>();
 		}
 		
@@ -45,7 +52,8 @@ public class PopulationReader {
 				populationData.put(popArray[0], popArray[1]);
 			}
 		} catch (Exception e) {
-			ErrorCheckerPrinter.printFileReadError();
+			ErrorCheckerPrinter.printFileReadError(); //prints the error
+			//returns empty map to trigger program exit
 			return new TreeMap<String, String>();
 		}
 

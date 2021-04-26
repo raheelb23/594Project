@@ -1,5 +1,11 @@
 package edu.upenn.cit594.data;
 
+/**
+ * This class provides a data structure to
+ * store parking violations data
+ * @author Muizz Mullani and Raheel Bhimani
+ *
+ */
 public class PropertyValues {
 
 	private String ZIPCode;

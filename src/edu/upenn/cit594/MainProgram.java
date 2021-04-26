@@ -24,16 +24,17 @@ public class MainProgram {
 	 */
 	public static void main(String[] args) {
 		
+		//checks whether the supplied comments are valid
 		ErrorCheckerPrinter.errorChecker(args);
 		
 		if(ErrorCheckerPrinter.exitProgram) return;
 		
 		//Set-up reader depending on type of input
 		ParkingViolationsReader violationsReader = null;
-		if(args[0].equalsIgnoreCase("csv")) {
+		if(args[0].equals("csv")) {
 			violationsReader = new ParkingViolationsCSVReader(args[1]);
 		}
-		else if(args[0].equalsIgnoreCase("json")) {
+		else if(args[0].equals("json")) {
 			violationsReader = new ParkingViolationsJSONReader(args[1]);
 		}
 		
@@ -49,6 +50,7 @@ public class MainProgram {
 		
 		//Pass mainProcessor to UserInterface and begin program
 		UserInterface interactive = new UserInterface(mainProcessor);
+		if(ErrorCheckerPrinter.exitProgram) return;
 		interactive.start(args);
 	}
 

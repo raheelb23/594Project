@@ -15,6 +15,14 @@ import edu.upenn.cit594.datamanagement.PopulationReader;
 import edu.upenn.cit594.datamanagement.PropertyValuesCSVReader;
 import edu.upenn.cit594.datamanagement.PropertyValuesReader;
 
+/**
+ * This class is the main brain that does calculations as
+ * user enters their choices, which is passed in by the UI.
+ * The class memorizes calculations for easy retrieval on subsequent calls and
+ * for calcs where similar data is used (#3 and #4, for example).
+ * @author Muizz Mullani and Raheel Bhimani
+ *
+ */
 public class MainProcessor {
 	
 	protected PopulationReader population;
@@ -32,6 +40,10 @@ public class MainProcessor {
 	protected Map<Integer, MarketValueLivableArea> marketValueLivableArea = new HashMap<Integer, MarketValueLivableArea>();
 	protected Map<String, Double> totalFines = new HashMap<String, Double>();
 	
+	/**
+	 * the constructor initializes and obtains data from the readers
+	 * @param violations
+	 */
 	public MainProcessor(ParkingViolationsReader violations) {
 		this.violations = violations;
 		population = new PopulationReader();
@@ -42,29 +54,39 @@ public class MainProcessor {
 		populationList = population.getPopulationData();
 	}
 	
+	/**
+	 * This method processes total population as provided in the population file.
+	 * @return totalPopulation
+	 */
 	public int getTotalPopulation() {
 		if (totalPopulation > -1) return totalPopulation; //check if call made prev.
 		
 		totalPopulation = 0; //first time calculation so set population to zero
 		
+		//iterate over population map and extract population, if it exists in the file
 		for(Map.Entry<String, String> entry : populationList.entrySet()) {
 			try {
-				totalPopulation += Integer.parseInt(entry.getValue());
+				totalPopulation += Integer.parseInt(entry.getValue()); //store population count
 			}
 			catch (Exception e) {
-				continue;
+				continue; //for any entries that are not valid, skip over
 			}
 		}
 		
 		return totalPopulation;
 	}
 	
+	/**
+	 * This method processes choice #2 for total fines per capita
+	 * @return
+	 */
 	public Map<String, String> getTotalFinesPerCapita() {
 		
 		if(totalFinesPerCapita.isEmpty() == false) return totalFinesPerCapita; //check if call made prev.
 		
-		Map<String, Double> temporary = new TreeMap<String, Double>();
+		Map<String, Double> temporary = new TreeMap<String, Double>(); //set-up a temp map
 		
+		//Iterate over parking violations list and store in temp map for valid entries
 		for(ParkingViolations entry : violationsList) {
 			try {
 				String ZIPcode= entry.getZIPCode();
@@ -81,10 +103,14 @@ public class MainProcessor {
 				}
 			}
 			catch (Exception e) {
-				continue;
+				continue; //for any entries that are not valid, skip over
 			}
 		}
 		
+		/*now iterate over each zip in the temp map and in the totalFinesPerCapita map store
+		 * the answer to choice #2 and also in the totalFines store the total fines for that zip.
+		 * This latter part helps with calculation for #6. Strategic decision to speed up that calc.
+		*/
 		for(Map.Entry<String, Double> entry : temporary.entrySet()) {
 			String ZIPcode = entry.getKey();
 			if(populationList.containsKey(ZIPcode) == false) continue;
@@ -93,7 +119,7 @@ public class MainProcessor {
 			String answerString = truncate(answer, 4);
 			totalFinesPerCapita.put(ZIPcode, answerString);
 			
-			if(totalFines.containsKey(ZIPcode)) continue;
+			if(totalFines.containsKey(ZIPcode)) continue; 
 			else {
 				totalFines.put(ZIPcode, entry.getValue());
 			}
@@ -102,10 +128,19 @@ public class MainProcessor {
 		return totalFinesPerCapita;
 	}
 	
+	/**
+	 * This method implements strategy whereby if the user inputs choice #3 or #4
+	 * it will calculate and store both aspects using the MarketValueLivableArea
+	 * processor. It does this on the basis of MarketValueLivableArea data structure.
+	 * @param ZIP
+	 * @param choice
+	 * @return
+	 */
 	public String getMarketValueLivableArea(int ZIP, int choice) {
 		
 		MarketValueLivableArea details;
 		
+		//check if the calculation has been done for this ZIP code before
 		if(marketValueLivableArea.containsKey(ZIP)) {
 			if(choice == 3) return marketValueLivableArea.get(ZIP).getAvgMarketValue();
 			if(choice == 4) return marketValueLivableArea.get(ZIP).getAvgLivableArea();
@@ -113,10 +148,11 @@ public class MainProcessor {
 		}
 		else {
 			MarketValueLivableAreaProcessor strategy = new MarketValueLivableAreaProcessor(ZIP, propertiesList);
-			details = strategy.calculate();
+			details = strategy.calculate(); //ask the helper processor to provide MarketValueLivableArea object
 			marketValueLivableArea.put(ZIP, details);
 		}
 		
+		//since both choice #3 and #4 are similar, calculate and store both
 		double answerChoice3 = 0;
 		String answerStringChoice3;
 
@@ -140,12 +176,22 @@ public class MainProcessor {
 		return "";
 	}
 	
+	/**
+	 * This method calculates and returns the market value per capita. It uses
+	 * the feature of MarketValueLivableArea object which stores the total
+	 * market value of a ZIP.  
+	 * @param ZIP
+	 * @return
+	 */
 	public String getMarketValuePerCapita(int ZIP) {
 		
+		//if the provided ZIP is not in the population list, 
+		//this calculation can stop right away
 		if(populationList.containsKey(Integer.toString(ZIP)) == false) return "0";
 		
 		MarketValueLivableArea details;
 		
+		//check if calculation has been done before
 		if(marketValueLivableArea.containsKey(ZIP)) {
 			details = marketValueLivableArea.get(ZIP);
 			if (details.getMarketValuePerCapita() != null) {
@@ -157,6 +203,7 @@ public class MainProcessor {
 			details = marketValueLivableArea.get(ZIP);
 		}
 		
+		//calculate answer and store the results
 		double answer = 0;
 		String answerString;
 		
@@ -172,14 +219,22 @@ public class MainProcessor {
 		
 	}
 	
+	/**
+	 * This method is the custom calculation. It determines the most
+	 * populous ZIP and then calculates total fines (in PA) over the number of 
+	 * residences that have livable area. 
+	 * @return
+	 */
 	public String getFinesPerResidenceMaxPopCounty() {
-		if(Integer.parseInt(finesPerResidenceMaxPop) > -1) return finesPerResidenceMaxPop;
+		//check if calculation already done
+		if(finesPerResidenceMaxPop.equals("-1") == false) return finesPerResidenceMaxPop;
 		
 		MarketValueLivableArea details;
 		double fineDetails = 0;
 		int ZIP = -1;
 		int maximum = -1;
 		
+		//find the most populous ZIP by iterating over population map
 		for(Map.Entry<String, String> population : populationList.entrySet()) {
 			
 			int num = 0;
@@ -196,7 +251,9 @@ public class MainProcessor {
 			}
 		}
 		
-		
+		//check to see if market value livable area has been calculated
+		//it already has total number of residences. if not, perform that
+		//calc so results can be stored and retrieved. 
 		if(marketValueLivableArea.containsKey(ZIP)) {
 			details  = marketValueLivableArea.get(ZIP);
 		}
@@ -206,6 +263,8 @@ public class MainProcessor {
 			marketValueLivableArea.put(ZIP, details);
 		}
 		
+		//check to see if total fines is available. if not, perform that
+		//calc so results can be stored and retrieved. 
 		String ZIPcode = Integer.toString(ZIP);
 		if(totalFines.containsKey(ZIPcode)) {
 			fineDetails = totalFines.get(ZIPcode);
@@ -216,6 +275,7 @@ public class MainProcessor {
 			
 		}
 		
+		//perform the calculation, store the result, and return answer
 		double answer = 0;
 		String answerString;
 		
@@ -228,6 +288,12 @@ public class MainProcessor {
 		return answerString;
 	}
 	
+	/**
+	 * Helper method to truncate responses and return a string representation
+	 * @param answer
+	 * @param decimals
+	 * @return
+	 */
 	private String truncate(double answer, int decimals) {
 		
 		if (answer == 0) return "0";
@@ -241,6 +307,7 @@ public class MainProcessor {
 			return answerString;
 		}
 		
+		//Do the following if only decimals are greater than 0
 		answerString = Double.toString(answer);
 		
 		int decimalIndex = answerString.indexOf(".");
@@ -248,6 +315,7 @@ public class MainProcessor {
 		
 		answerString = answerString.substring(0, decimalIndex+decimals+1);
 		
+		//check if trailing zeroes are needed
 		int variance = answerString.length() - (decimalIndex + 1); 
 		
 		if(variance < decimals) {

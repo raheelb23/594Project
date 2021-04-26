@@ -1,5 +1,11 @@
 package edu.upenn.cit594.data;
 
+/**
+ * This class provides a data structure to
+ * store parking violations data
+ * @author Muizz Mullani and Raheel Bhimani
+ *
+ */
 public class ParkingViolations {
 
 	private String time;
@@ -10,6 +16,16 @@ public class ParkingViolations {
 	private String violationID;
 	private String ZIPCode;
 	
+	/**
+	 * Constructor that initializes each parking violation row.
+	 * @param time
+	 * @param fine
+	 * @param description
+	 * @param vehicleID
+	 * @param state
+	 * @param violationID
+	 * @param ZIPCode
+	 */
 	public ParkingViolations(String time, String fine, String description, String vehicleID, String state, String violationID, String ZIPCode) {
 		this.time = time;
 		this.fine = fine;

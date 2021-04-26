@@ -14,6 +14,11 @@ import java.util.TreeMap;
 import edu.upenn.cit594.data.PropertyValues;
 import edu.upenn.cit594.ui.ErrorCheckerPrinter;
 
+/**
+ * This class reads the properties data from the specified file
+ * @author Muizz Mullani and Raheel Bhimani
+ *
+ */
 public class PropertyValuesCSVReader implements PropertyValuesReader {
 
 	public static String fileName;
@@ -22,6 +27,9 @@ public class PropertyValuesCSVReader implements PropertyValuesReader {
 
 
 	@Override
+	/**
+	 * This method returns a list containing property value objects
+	 */
 	public List<PropertyValues> getPropertyValues() {
 
 		List<PropertyValues> propertyValues = new ArrayList<PropertyValues>();
@@ -32,11 +40,13 @@ public class PropertyValuesCSVReader implements PropertyValuesReader {
 			if (file.canRead()) {
 				readCSVInputFile = new BufferedReader(new FileReader(fileName));
 			} else {
-				ErrorCheckerPrinter.printFileReadError();
+				ErrorCheckerPrinter.printFileReadError(); //prints the error
+				//returns empty list to trigger program exit
 				return new ArrayList<PropertyValues>();
 			}
 		} catch (FileNotFoundException e) {
-			ErrorCheckerPrinter.printFileDoesNotExistError();
+			ErrorCheckerPrinter.printFileDoesNotExistError(); //prints the error
+			//returns empty list to trigger program exit
 			return new ArrayList<PropertyValues>();
 		}
 
@@ -54,13 +64,18 @@ public class PropertyValuesCSVReader implements PropertyValuesReader {
 
 		} catch (Exception e) {
 
-			ErrorCheckerPrinter.printFileReadError();
+			ErrorCheckerPrinter.printFileReadError(); //prints the error
+			//returns empty list to trigger program exit
 			return new ArrayList<PropertyValues>();
 		}
 
 		return propertyValues;
 	}
 
+	/**
+	 * Helper method for comma recognitions
+	 * @param label
+	 */
 	private void identifyRowLabels(String label) {
 		String[] rowComponents = label.split(",");
 
@@ -70,9 +85,13 @@ public class PropertyValuesCSVReader implements PropertyValuesReader {
 		}
 	}
 
+	/**
+	 * Helper method to replace commas found within quotes
+	 * @param info
+	 * @return
+	 */
 	private PropertyValues identifyPropertyInfo(String info) {
 
-		// to replace commas found within quotes
 		StringBuilder sb = new StringBuilder(info);
 		boolean found = false;
 

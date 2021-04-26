@@ -9,7 +9,8 @@ package edu.upenn.cit594.ui;
  */
 public class ErrorCheckerPrinter {
 
-	public static boolean exitProgram = false;
+	public static boolean exitProgram = false; //allows for graceful exit w/o using System.exit
+	
 	/**
 	 * checks initial list of arguments provided by user
 	 * @param args
@@ -19,7 +20,7 @@ public class ErrorCheckerPrinter {
 			System.out.println("Usage: not enough arguments supplied. The program will now exit.");
 			exitProgram = true;
 		}
-		if(args[0].equalsIgnoreCase("json") == false && args[0].equalsIgnoreCase("csv") == false) {
+		if(args[0].equals("json") == false && args[0].equals("csv") == false) {
 			System.out.println("Usage: file format provided is not supported. The program will now exit.");
 			exitProgram = true;
 		}

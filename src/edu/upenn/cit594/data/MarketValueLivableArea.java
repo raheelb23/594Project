@@ -1,5 +1,11 @@
 package edu.upenn.cit594.data;
 
+/**
+ * This class provides a strategic data structure to
+ * store tasks #3 and #4
+ * @author Muizz Mullani and Raheel Bhimani
+ *
+ */
 public class MarketValueLivableArea {
 
 	protected double marketValue;
@@ -10,6 +16,14 @@ public class MarketValueLivableArea {
 	protected String avgLivableArea;
 	protected String marketValuePerCapita;
 	
+	/**
+	 * Constructor provides basic parameters from which #3 and #4 calcs 
+	 * can be performed. 
+	 * @param marketValue
+	 * @param livableArea
+	 * @param totalHomesMV
+	 * @param totalHomesLA
+	 */
 	public MarketValueLivableArea(double marketValue, double livableArea, int totalHomesMV, int totalHomesLA) {
 		this.marketValue = marketValue;
 		this.livableArea = livableArea;

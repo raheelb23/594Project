@@ -1,17 +1,14 @@
 package edu.upenn.cit594.logging;
 
-//check the imports
 import java.io.File;
 import java.io.PrintWriter;
-import java.util.List;
-import java.util.Map;
 
-//import edu.upenn.cit594.ui.ErrorCheckerPrinter;
+import edu.upenn.cit594.ui.ErrorCheckerPrinter;
 
 /**
  * This class implements Singleton design to create a logging function,
- * which stores flu tweets by state in a file specified by the user. 
- * @author muizz.mullani
+ * which stores user provided inputs with time stamps.  
+ * @author Muizz Mullani and Raheel Bhimani
  *
  */
 public class Logger {
@@ -28,8 +25,9 @@ public class Logger {
 			out = new PrintWriter(new File(filename));
 		}
 		catch (Exception e) {
-			e.printStackTrace();
-			//ErrorCheckerPrinter.printFileDoesNotExistError();
+			ErrorCheckerPrinter.printFileDoesNotExistError(); //print error
+			//Initiate graceful exit sequence
+			ErrorCheckerPrinter.exitProgram = true;
 		}
 		
 	}
@@ -64,9 +62,8 @@ public class Logger {
 	}
 	
 	/**
-	 * Method takes in a map of tweets and writes to logging file which is 
-	 * provided by the Main class
-	 * @param tweets
+	 * Method takes in a String output and writes to logging file 
+	 * @param output
 	 */
 	public void logString(String output) {
 		
@@ -76,9 +73,8 @@ public class Logger {
 	}
 	
 	/**
-	 * Method takes in a map of tweets and writes to logging file which is 
-	 * provided by the Main class
-	 * @param tweets
+	 * Method takes in an array of String and writes to logging file
+	 * @param output
 	 */
 	public void logStringArray(String[] output) {
 		
@@ -90,9 +86,5 @@ public class Logger {
 		out.println();
 		out.flush();
 		
-	}
-	
-	public void close() {
-		out.close();
 	}
 }
