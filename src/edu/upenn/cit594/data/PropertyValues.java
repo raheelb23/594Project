@@ -2,7 +2,7 @@ package edu.upenn.cit594.data;
 
 /**
  * This class provides a data structure to
- * store parking violations data
+ * store property values data
  * @author Muizz Mullani and Raheel Bhimani
  *
  */

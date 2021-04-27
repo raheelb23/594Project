@@ -21,9 +21,9 @@ public class UserInterface {
 	 * Constructor that sets up MainProcessor and logging function
 	 * @param processor
 	 */
-	public UserInterface(MainProcessor processor) {
+	public UserInterface(MainProcessor processor, Logger logging) {
 		this.processor = processor;
-		logging = Logger.getInstance();
+		this.logging = logging;
 	}
 	
 	/**
@@ -48,9 +48,7 @@ public class UserInterface {
 	 * and log arguments until user exits and or an error is encountered.  
 	 * @param args
 	 */
-	public void start(String[] args) {
-		
-		logging.logStringArray(args);
+	public void start() {
 		
 		boolean exit = false;
 		Scanner in = new Scanner(System.in);

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.upenn.cit594.data.ParkingViolations;
+import edu.upenn.cit594.logging.Logger;
 import edu.upenn.cit594.ui.ErrorCheckerPrinter;
 
 /**
@@ -32,12 +33,13 @@ public class ParkingViolationsCSVReader implements ParkingViolationsReader {
 	/**
 	 * Returns a list of parking violations as read from csv file
 	 */
-	public List<ParkingViolations> getParkingViolations() {
+	public List<ParkingViolations> getParkingViolations(Logger logging) {
 
 		List<ParkingViolations> parkingViolations = new ArrayList<ParkingViolations>();
 		BufferedReader readCSVInputFile = null;
 
 		try {
+			logging.logString(fileName);
 			File file = new File(fileName);
 			if (file.canRead()) {
 				readCSVInputFile = new BufferedReader(new FileReader(fileName));

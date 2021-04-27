@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import edu.upenn.cit594.data.PropertyValues;
+import edu.upenn.cit594.logging.Logger;
 import edu.upenn.cit594.ui.ErrorCheckerPrinter;
 
 /**
@@ -30,12 +31,13 @@ public class PropertyValuesCSVReader implements PropertyValuesReader {
 	/**
 	 * This method returns a list containing property value objects
 	 */
-	public List<PropertyValues> getPropertyValues() {
+	public List<PropertyValues> getPropertyValues(Logger logging) {
 
 		List<PropertyValues> propertyValues = new ArrayList<PropertyValues>();
 		BufferedReader readCSVInputFile = null;
 
 		try {
+			logging.logString(fileName);
 			File file = new File(fileName);
 			if (file.canRead()) {
 				readCSVInputFile = new BufferedReader(new FileReader(fileName));

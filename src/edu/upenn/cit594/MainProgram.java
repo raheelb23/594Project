@@ -29,6 +29,17 @@ public class MainProgram {
 		
 		if(ErrorCheckerPrinter.exitProgram) return;
 		
+		//Set-up remaining readers' and logger filenames
+		PropertyValuesCSVReader.fileName = args[2];
+		PopulationReader.fileName = args[3];
+		Logger.setFilename(args[4]);
+		
+		//Obtain logger instance
+		Logger logging = Logger.getInstance();
+		
+		//log initial arguments
+		logging.logStringArray(args);
+		
 		//Set-up reader depending on type of input
 		ParkingViolationsReader violationsReader = null;
 		if(args[0].equals("csv")) {
@@ -38,20 +49,15 @@ public class MainProgram {
 			violationsReader = new ParkingViolationsJSONReader(args[1]);
 		}
 		
-		//Set-up remaining readers' and logger filenames
-		PropertyValuesCSVReader.fileName = args[2];
-		PopulationReader.fileName = args[3];
-		Logger.setFilename(args[4]);
-		
 		//Pass in violationsReader to MainProcessor
-		MainProcessor mainProcessor = new MainProcessor(violationsReader);
+		MainProcessor mainProcessor = new MainProcessor(violationsReader, logging);
 		
 		if(ErrorCheckerPrinter.exitProgram) return;
 		
 		//Pass mainProcessor to UserInterface and begin program
-		UserInterface interactive = new UserInterface(mainProcessor);
+		UserInterface interactive = new UserInterface(mainProcessor, logging);
 		if(ErrorCheckerPrinter.exitProgram) return;
-		interactive.start(args);
+		interactive.start();
 	}
 
 }

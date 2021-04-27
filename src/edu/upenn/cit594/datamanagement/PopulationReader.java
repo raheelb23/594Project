@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.util.Map;
 import java.util.TreeMap;
 
+import edu.upenn.cit594.logging.Logger;
 import edu.upenn.cit594.ui.ErrorCheckerPrinter;
 
 /**
@@ -22,7 +23,7 @@ public class PopulationReader {
 	 * This method returns a map as it reads in the population data
 	 * @return
 	 */
-	public Map<String, String> getPopulationData(){
+	public Map<String, String> getPopulationData(Logger logging){
 		
 		TreeMap<String, String> populationData = new TreeMap<>();
 
@@ -30,6 +31,7 @@ public class PopulationReader {
 		BufferedReader readPopulationInputFile = null;
 
 		try {
+			logging.logString(fileName);
 			File file = new File(fileName);
 			if (file.canRead()) {
 				readPopulationInputFile = new BufferedReader(new FileReader(fileName));

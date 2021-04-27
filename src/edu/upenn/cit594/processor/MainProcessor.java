@@ -14,6 +14,7 @@ import edu.upenn.cit594.datamanagement.ParkingViolationsReader;
 import edu.upenn.cit594.datamanagement.PopulationReader;
 import edu.upenn.cit594.datamanagement.PropertyValuesCSVReader;
 import edu.upenn.cit594.datamanagement.PropertyValuesReader;
+import edu.upenn.cit594.logging.Logger;
 
 /**
  * This class is the main brain that does calculations as
@@ -44,14 +45,14 @@ public class MainProcessor {
 	 * the constructor initializes and obtains data from the readers
 	 * @param violations
 	 */
-	public MainProcessor(ParkingViolationsReader violations) {
+	public MainProcessor(ParkingViolationsReader violations, Logger logging) {
 		this.violations = violations;
 		population = new PopulationReader();
 		properties = new PropertyValuesCSVReader();
 		
-		violationsList = violations.getParkingViolations();
-		propertiesList = properties.getPropertyValues();
-		populationList = population.getPopulationData();
+		violationsList = violations.getParkingViolations(logging);
+		propertiesList = properties.getPropertyValues(logging);
+		populationList = population.getPopulationData(logging);
 	}
 	
 	/**
